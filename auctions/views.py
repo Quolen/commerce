@@ -40,7 +40,9 @@ def place_bid(request, listing_id):
             except ValueError:
                 error_message = "Invalid bid amount. Please enter a valid number."
             else:
-                if bid_amount >= listing.starting_bid and bid_amount > listing.current_bid_amount():
+                if request.user == listing.author:
+                    error_message = "You cannot bid on your own listing."
+                elif bid_amount >= listing.starting_bid and bid_amount > listing.current_bid_amount():
                     bid = Bid.objects.create(listing=listing, bidder=request.user, amount=bid_amount)
                 else:
                     error_message = "Invalid bid. Please make sure it's at least as large as the starting bid and greater than any other bids placed."

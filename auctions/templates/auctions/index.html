@@ -1,33 +1,30 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
-
+<div class="container mt-4">
+    <h2 class="mb-4">Active Listings</h2>
 
     {% for listing in active_listings %}
-        <div class="border">
+        <div class="border rounded p-4 mb-4 bg-light">
             <a href="{% url 'listing_detail' listing.id %}">
-                <div class="item">
-                    <div class="item__img">
+                <div class="item d-flex align-items-center">
+                    <div class="item__img mr-4 border">
                         {% if listing.image %}
-                            <img src="{{ listing.image.url }}" alt="{{ listing.title }}">
+                            <img src="{{ listing.image.url }}" alt="{{ listing.title }}" class="img-fluid rounded">
                         {% else %}
-                            <p>No Image Available</p>
+                            <p class="text-center">No Image Available</p>
                         {% endif %}
                     </div>
                     <div class="item__specs">
-                        {{ listing.title }}
-                        <br>
-                        {{ listing.description }}
-                        <br>
-                        ${{ listing.current_bid_amount }}
-                        <br>
-                        {{ listing.author }}
-                        <br>
-                        {{ listing.created_at }}
+                        <h4>{{ listing.title }}</h4>
+                        <p>{{ listing.description }}</p>
+                        <p><strong>Current Bid:</strong> ${{ listing.current_bid_amount }}</p>
+                        <p><strong>Author:</strong> {{ listing.author.username }}</p>
+                        <p><strong>Created at:</strong> {{ listing.created_at }}</p>
                     </div>
                 </div>
             </a>
         </div>
     {% endfor %}
+</div>
 {% endblock %}

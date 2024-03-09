@@ -2,43 +2,42 @@
 {% load static %}
 
 {% block body %}
-    <h2>Create Listing</h2>
-    <form method="post" action="{% url 'create_listing' %}" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <div class="form-group">
-            <label for="{{ form.title.id_for_label }}">Title:</label>
-            {{ form.title }}
-        </div>
-
-        <div class="form-group">
-            <label for="{{ form.desc.id_for_label }}">Description:</label>
-            {{ form.desc }}
-        </div>
-
-        <div class="form-group">
-            <label for="{{ form.bid.id_for_label }}">Starting Bid in USD$:</label>
-            {{ form.bid }}
-        </div>
-
-        {% if form.errors.bid %}
-            <div class="error-message">
-                <strong>{{ form.errors.bid.0 }}</strong>
+    <div class="container mt-4">
+        <h2 class="text-primary">Create Listing</h2>
+        <form method="post" action="{% url 'create_listing' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}" class="font-weight-bold">Title:</label>
+                {{ form.title }}
             </div>
-        {% endif %}
 
-        <div class="form-group">
-            <label for="{{ form.image.id_for_label }}">Upload Image (Optional):</label>
-            {{ form.image }}
-        </div>
+            <div class="form-group">
+                <label for="{{ form.desc.id_for_label }}" class="font-weight-bold">Description:</label>
+                {{ form.desc }}
+            </div>
 
-        <div class="form-group">
-            <label for="{{ form.category.id_for_label }}">Category:</label>
-            {{ form.category }}
-        </div>
+            <div class="form-group">
+                <label for="{{ form.bid.id_for_label }}" class="font-weight-bold">Starting Bid in USD$:</label>
+                {{ form.bid }}
+                {% if form.errors.bid %}
+                    <small class="text-danger">{{ form.errors.bid.0 }}</small>
+                {% endif %}
+            </div>
 
-        <div class="form-group">
-            <input type="submit" value="Create Listing" class="btn btn-primary">
-        </div>
-    </form>
+            <div class="form-group">
+                <label for="{{ form.image.id_for_label }}" class="font-weight-bold">Upload Image (Optional):</label>
+                {{ form.image }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.category.id_for_label }}" class="font-weight-bold">Category:</label>
+                {{ form.category }}
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Create Listing" class="btn btn-primary">
+            </div>
+        </form>
+    </div>
 {% endblock %}

@@ -2,32 +2,35 @@
 {% load static %}
 
 {% block body %}
-    <h2>Your Watchlist</h2>
-    {% if watchlist_listings %}
-        <ul>
-            {% for listing in watchlist_listings %}
-                <li>
-                    <div class="listing-info">
-                        <div class="title">
-                            <a href="{% url 'listing_detail' listing.id %}">{{ listing.title }}</a>
+    <div class="container mt-4">
+        <h2>Your Watchlist</h2>
+        {% if watchlist_listings %}
+            <div class="row">
+                {% for listing in watchlist_listings %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title"><a href="{% url 'listing_detail' listing.id %}">{{ listing.title }}</a></h5>
+                                {% if listing.image %}
+                                    <img src="{{ listing.image.url }}" class="card-img-top rounded img-thumbnail" alt="{{ listing.title }}">
+                                {% else %}
+                                    <div class="placeholder-img card-img-top rounded"></div>
+                                {% endif %}
+                                <p class="card-text">{{ listing.description }}</p>
+                                <p class="card-text text-muted">Starting Bid: ${{ listing.starting_bid }}</p>
+                                <!-- Add a form to remove the listing from the watchlist -->
+                                <form method="post" action="{% url 'watchlist' %}" class="mt-3">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                                    <button type="submit" name="action" value="remove" class="btn btn-danger">Remove from Watchlist</button>
+                                </form>
+                            </div>
                         </div>
-                        {% if listing.image %}
-                            <div class="item__img"><img src="{{ listing.image.url }}" alt="img"></div>
-                        {% endif %}
-                        <div class="description">{{ listing.description }}</div>
-                        <div class="bid">Starting Bid: ${{ listing.starting_bid }}</div>
-                        
-                        <!-- Add a form to remove the listing from the watchlist -->
-                        <form method="post" action="{% url 'watchlist' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="listing_id" value="{{ listing.id }}">
-                            <button type="submit" name="action" value="remove" class="btn btn-danger">Remove from Watchlist</button>
-                        </form>
                     </div>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Your watchlist is empty.</p>
-    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted">Your watchlist is empty.</p>
+        {% endif %}
+    </div>
 {% endblock %}

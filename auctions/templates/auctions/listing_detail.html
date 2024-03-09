@@ -2,78 +2,85 @@
 {% load static %}
 
 {% block body %}
-    <div class="title">Title: {{ listing.title }}</div>
-    
-    {% if listing.image %}
-        <div class="item__img"><img src="{{ listing.image.url }}" alt="img"></div>
-    {% endif %}
-    
-    <div class="desc">{{ listing.description }}</div>
-    Starting bid:
-    <div class="bid">${{ listing.starting_bid }}</div>
+<div class="container mt-4">
+    <div class="border p-4 bg-light">
+        <h2 class="mb-4 text-primary">Title: {{ listing.title }}</h2>
 
-
-    {% if error_message %}
-        <div class="error-message">{{ error_message }}</div>
-    {% endif %}
-    {# Display current highest bid and bidder username #}
-    {% if listing.is_active %}
-        {% if highest_bid %}
-            <div class="current-bid">
-                Current Highest Bid: ${{ highest_bid.amount }} by {{ highest_bid.bidder.username }}
-                (Placed on: {{ highest_bid.created_at }})
+        {% if listing.image %}
+            <div class="item__img mr-4">
+                <img src="{{ listing.image.url }}" alt="img" class="img-fluid rounded border">
             </div>
-        {% else %}
-            <div class="no-bids">No bids yet. Be the first to bid!</div>
         {% endif %}
 
-        <form method="post" action="{% url 'place_bid' listing.id %}">
-            {% csrf_token %}
-            <label for="bid_amount">Your Bid:</label>
-            <input type="number" name="bid_amount" step="0.01" required>
-            <button type="submit" class="btn btn-primary">Place Bid</button>
-        </form>
-    {% endif %}
-    
-    {% if listing.category %}
-        <div class="category">Category: {{ listing.category.name }}</div>
-    {% endif %}
-    
-    {% if listing.author %}
-        <div class="author">Author: {{ listing.author.username }}</div>
-    {% endif %}
-    
-    {% if listing.created_at %}
-        <div class="created-at">Created at: {{ listing.created_at }}</div>
-    {% endif %}
+        <div class="desc mb-4">{{ listing.description }}</div>
+        
+        <div class="bid mb-4 text-success"><strong>Starting Bid:</strong> ${{ listing.starting_bid }}</div>
 
-    
-    {% if listing.is_active %}
-        <form method="post" action="{% url 'watchlist' %}">
-            {% csrf_token %}
-            <input type="hidden" name="listing_id" value="{{ listing.id }}">
-            <button type="submit" name="action" value="add" class="btn btn-primary">Add to Watchlist</button>
-        </form>
-    {% endif %}
-
-    <br>
-
-    {% if not listing.is_active %}
-        <div class="closed">
-            Auction Closed. Listing was sold for {{highest_bid.amount}}$
-        </div>
-        {% if listing.winner == request.user %}
-            <div class="winner-info">Congratulations! You won this auction.</div>
-        {% elif listing.winner %}
-            <div class="winner-info">This auction has been won by {{ listing.winner.username }}.</div>
-        {% else %}
-            <div class="winner-info">This auction is closed, but no winner has been determined.</div>
+        {% if error_message %}
+            <div class="error-message mb-4 alert alert-danger">{{ error_message }}</div>
         {% endif %}
-    {% elif listing.author == user %}
-        <form method="post" action="{% url 'close_auction' listing_id=listing.id %}">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger">Close Auction</button>
-        </form>
-    {% endif %}
 
+        {% if listing.is_active %}
+            {% if highest_bid %}
+                <div class="current-bid mb-4">
+                    <strong>Current Highest Bid:</strong> ${{ highest_bid.amount }} by {{ highest_bid.bidder.username }}
+                    (Placed on: {{ highest_bid.created_at }})
+                </div>
+            {% else %}
+                <div class="no-bids mb-4 alert alert-info">No bids yet. Be the first to bid!</div>
+            {% endif %}
+
+            <form method="post" action="{% url 'place_bid' listing.id %}" class="mb-4">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="bid_amount"><strong>Your Bid:</strong></label>
+                    <div class="input-group">
+                        <input type="number" name="bid_amount" step="0.01" required class="form-control">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary mb-2">Place Bid</button>
+            </form>            
+        {% endif %}
+
+        {% if listing.category %}
+            <div class="category mb-4"><strong>Category:</strong> {{ listing.category.name }}</div>
+        {% endif %}
+
+        {% if listing.author %}
+            <div class="author mb-4"><strong>Author:</strong> {{ listing.author.username }}</div>
+        {% endif %}
+
+        {% if listing.created_at %}
+            <div class="created-at mb-4"><strong>Created at:</strong> {{ listing.created_at }}</div>
+        {% endif %}
+
+        {% if listing.is_active %}
+            <form method="post" action="{% url 'watchlist' %}" class="mb-4">
+                {% csrf_token %}
+                <input type="hidden" name="listing_id" value="{{ listing.id }}">
+                <button type="submit" name="action" value="add" class="btn btn-primary">Add to Watchlist</button>
+            </form>
+        {% endif %}
+
+        <br>
+
+        {% if not listing.is_active %}
+            <div class="closed mb-4 alert alert-dark">
+                <strong>Auction Closed.</strong> Listing was sold for ${{ highest_bid.amount }}
+            </div>
+            {% if listing.winner == request.user %}
+                <div class="winner-info mb-4 alert alert-success"><strong>Congratulations!</strong> You won this auction.</div>
+            {% elif listing.winner %}
+                <div class="winner-info mb-4 alert alert-secondary">This auction has been won by <strong>{{ listing.winner.username }}</strong>.</div>
+            {% else %}
+                <div class="winner-info mb-4 alert alert-warning">This auction is closed, but no winner has been determined.</div>
+            {% endif %}
+        {% elif listing.author == user %}
+            <form method="post" action="{% url 'close_auction' listing_id=listing.id %}" class="mb-4">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Close Auction</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
