@@ -17,23 +17,23 @@
         <div class="error-message">{{ error_message }}</div>
     {% endif %}
     {# Display current highest bid and bidder username #}
-    {% if highest_bid %}
-        <div class="current-bid">
-            Current Highest Bid: ${{ highest_bid.amount }} by {{ highest_bid.bidder.username }}
-            (Placed on: {{ highest_bid.created_at }})
-        </div>
-    {% else %}
-        <div class="no-bids">No bids yet. Be the first to bid!</div>
+    {% if listing.is_active %}
+        {% if highest_bid %}
+            <div class="current-bid">
+                Current Highest Bid: ${{ highest_bid.amount }} by {{ highest_bid.bidder.username }}
+                (Placed on: {{ highest_bid.created_at }})
+            </div>
+        {% else %}
+            <div class="no-bids">No bids yet. Be the first to bid!</div>
+        {% endif %}
+
+        <form method="post" action="{% url 'place_bid' listing.id %}">
+            {% csrf_token %}
+            <label for="bid_amount">Your Bid:</label>
+            <input type="number" name="bid_amount" step="0.01" required>
+            <button type="submit" class="btn btn-primary">Place Bid</button>
+        </form>
     {% endif %}
-
-
-    {# Bid Form #}
-    <form method="post" action="{% url 'place_bid' listing.id %}">
-        {% csrf_token %}
-        <label for="bid_amount">Your Bid:</label>
-        <input type="number" name="bid_amount" step="0.01" required>
-        <button type="submit" class="btn btn-primary">Place Bid</button>
-    </form>
     
     {% if listing.category %}
         <div class="category">Category: {{ listing.category.name }}</div>
@@ -48,10 +48,32 @@
     {% endif %}
 
     
-    <form method="post" action="{% url 'watchlist' %}">
-        {% csrf_token %}
-        <input type="hidden" name="listing_id" value="{{ listing.id }}">
-        <button type="submit" name="action" value="add" class="btn btn-primary">Add to Watchlist</button>
-    </form>
+    {% if listing.is_active %}
+        <form method="post" action="{% url 'watchlist' %}">
+            {% csrf_token %}
+            <input type="hidden" name="listing_id" value="{{ listing.id }}">
+            <button type="submit" name="action" value="add" class="btn btn-primary">Add to Watchlist</button>
+        </form>
+    {% endif %}
+
+    <br>
+
+    {% if not listing.is_active %}
+        <div class="closed">
+            Auction Closed. Listing was sold for {{highest_bid.amount}}$
+        </div>
+        {% if listing.winner == request.user %}
+            <div class="winner-info">Congratulations! You won this auction.</div>
+        {% elif listing.winner %}
+            <div class="winner-info">This auction has been won by {{ listing.winner.username }}.</div>
+        {% else %}
+            <div class="winner-info">This auction is closed, but no winner has been determined.</div>
+        {% endif %}
+    {% elif listing.author == user %}
+        <form method="post" action="{% url 'close_auction' listing_id=listing.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Close Auction</button>
+        </form>
+    {% endif %}
 
 {% endblock %}

@@ -17,6 +17,16 @@ def index(request):
         "active_listings": listings
     })
 
+def close_auction(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    highest_bid = listing.bids.order_by('-amount').first()
+    
+    listing.winner = highest_bid.bidder
+    listing.is_active = False
+    listing.save() 
+
+    return redirect('listing_detail', listing_id)
+
 def place_bid(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     error_message = None

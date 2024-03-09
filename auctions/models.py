@@ -20,6 +20,7 @@ class Listing(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='listings')
     created_at = models.DateTimeField(auto_now_add=True)
     is_active = models.BooleanField(default=True)
+    winner = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True)
 
     def current_bid_amount(self):
         highest_bid = self.bids.order_by('-amount').first()
