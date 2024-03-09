@@ -1,0 +1,33 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div class="title">Title: {{ listing.title }}</div>
+    
+    {% if listing.image %}
+        <div class="item__img"><img src="{{ listing.image.url }}" alt="img"></div>
+    {% endif %}
+    
+    <div class="desc">{{ listing.description }}</div>
+    <div class="bid">${{ listing.starting_bid }}</div>
+    
+    {% if listing.category %}
+        <div class="category">Category: {{ listing.category.name }}</div>
+    {% endif %}
+    
+    {% if listing.author %}
+        <div class="author">Author: {{ listing.author.username }}</div>
+    {% endif %}
+    
+    {% if listing.created_at %}
+        <div class="created-at">Created at: {{ listing.created_at }}</div>
+    {% endif %}
+
+    
+    <form method="post" action="{% url 'watchlist' %}">
+        {% csrf_token %}
+        <input type="hidden" name="listing_id" value="{{ listing.id }}">
+        <button type="submit" name="action" value="add" class="btn btn-primary">Add to Watchlist</button>
+    </form>
+
+{% endblock %}

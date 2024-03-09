@@ -1,0 +1,27 @@
+body {
+    padding: 10px;
+}
+
+.border {
+    outline: 3px solid black;
+    border-radius: 1px;
+    margin-bottom: 10px;
+}
+
+.item {
+    display: flex;
+}
+
+.item__specs {
+    font-size: 20px;
+}
+
+.form-control {
+    width: 500px;
+}
+
+.error-message {
+    color: red;
+    font-weight: bold;
+    margin-top: 5px;
+}
