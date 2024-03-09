@@ -1,3 +1,4 @@
+from pyexpat.errors import messages
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -16,12 +17,39 @@ def index(request):
         "active_listings": listings
     })
 
+def place_bid(request, listing_id):
+    listing = Listing.objects.get(pk=listing_id)
+    error_message = None
+
+    if request.method == "POST":
+        bid_amount = request.POST.get('bid_amount')
+
+        if bid_amount:
+            try:
+                bid_amount = float(bid_amount)
+            except ValueError:
+                error_message = "Invalid bid amount. Please enter a valid number."
+            else:
+                if bid_amount >= listing.starting_bid and bid_amount > listing.current_bid_amount():
+                    bid = Bid.objects.create(listing=listing, bidder=request.user, amount=bid_amount)
+                else:
+                    error_message = "Invalid bid. Please make sure it's at least as large as the starting bid and greater than any other bids placed."
+        else:
+            error_message = "Bid amount is required."
+
+    highest_bid = listing.bids.order_by('-amount').first()
+
+    return render(request, 'auctions/listing_detail.html', {'listing': listing, 'highest_bid': highest_bid, 'error_message': error_message})
+
+
 def listing_detail(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
 
-    return render(request, "auctions/listing_detail.html", {
-        "listing": listing
-    })
+    highest_bid = None
+    if listing.bids.exists():
+        highest_bid = listing.bids.order_by('-amount').first()
+
+    return render(request, 'auctions/listing_detail.html', {'listing': listing, 'highest_bid': highest_bid})
 
 def categories(request):
     categories = Category.objects.all()

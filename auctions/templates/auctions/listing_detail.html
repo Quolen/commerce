@@ -9,7 +9,31 @@
     {% endif %}
     
     <div class="desc">{{ listing.description }}</div>
+    Starting bid:
     <div class="bid">${{ listing.starting_bid }}</div>
+
+
+    {% if error_message %}
+        <div class="error-message">{{ error_message }}</div>
+    {% endif %}
+    {# Display current highest bid and bidder username #}
+    {% if highest_bid %}
+        <div class="current-bid">
+            Current Highest Bid: ${{ highest_bid.amount }} by {{ highest_bid.bidder.username }}
+            (Placed on: {{ highest_bid.created_at }})
+        </div>
+    {% else %}
+        <div class="no-bids">No bids yet. Be the first to bid!</div>
+    {% endif %}
+
+
+    {# Bid Form #}
+    <form method="post" action="{% url 'place_bid' listing.id %}">
+        {% csrf_token %}
+        <label for="bid_amount">Your Bid:</label>
+        <input type="number" name="bid_amount" step="0.01" required>
+        <button type="submit" class="btn btn-primary">Place Bid</button>
+    </form>
     
     {% if listing.category %}
         <div class="category">Category: {{ listing.category.name }}</div>
