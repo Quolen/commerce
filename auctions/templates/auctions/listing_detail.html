@@ -81,6 +81,31 @@
                 <button type="submit" class="btn btn-danger">Close Auction</button>
             </form>
         {% endif %}
+
+        <form method="post" action="{% url 'add_comment' listing_id=listing.id %}" class="comment-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="comment_text" class="form-label">Add a Comment:</label>
+                <textarea class="form-control" id="comment_text" name="comment_text" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        
+        <div class="comments-section">
+            {% if comments %}
+                <h3 class="comments-heading">Comments:</h3>
+                <ul class="comment-list">
+                    {% for comment in comments %}
+                        <li class="comment-item">
+                            <span class="comment-content">{{ comment.content }}</span> - 
+                            <span class="comment-info">by {{ comment.commenter.username }} ({{ comment.created_at }})</span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <h3 class="no-comments-heading">No comments so far</h3>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}

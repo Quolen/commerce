@@ -17,6 +17,15 @@ def index(request):
         "active_listings": listings
     })
 
+def add_comment(request, listing_id):
+    if request.method == "POST":
+        listing = Listing.objects.get(pk=listing_id)
+        Comment.objects.create(listing=listing, commenter=request.user, content=request.POST['comment_text'])
+        # Get all comments for the current listing
+        comments = Comment.objects.filter(listing=listing)
+        # Redirect to the same listing detail page after adding the comment
+        return redirect('listing_detail', listing_id=listing_id)
+
 def close_auction(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
     highest_bid = listing.bids.order_by('-amount').first()
@@ -56,12 +65,13 @@ def place_bid(request, listing_id):
 
 def listing_detail(request, listing_id):
     listing = Listing.objects.get(pk=listing_id)
+    comments = Comment.objects.filter(listing=listing)
 
     highest_bid = None
     if listing.bids.exists():
         highest_bid = listing.bids.order_by('-amount').first()
 
-    return render(request, 'auctions/listing_detail.html', {'listing': listing, 'highest_bid': highest_bid})
+    return render(request, 'auctions/listing_detail.html', {'listing': listing, 'highest_bid': highest_bid, 'comments': comments})
 
 def categories(request):
     categories = Category.objects.all()

@@ -1,28 +1,99 @@
+/* Reset padding for the body */
 body {
-    padding: 10px;
+    padding: 0;
+    margin: 0;
 }
 
+/* Border style */
 .border {
     outline: 3px solid black;
     border-radius: 1px;
     margin-bottom: 10px;
 }
 
+/* Flex layout for items */
 .item {
     display: flex;
 }
 
+/* Font size for item specs */
 .item__specs {
     font-size: 20px;
 }
 
-.form-control {
-    width: 500px;
+/* Adjust the width of textarea */
+.form-group.textarea-control textarea.form-control {
+    width: 100px; /* Adjust as needed */
 }
 
+/* Error message style */
 .error-message {
     color: red;
     font-weight: bold;
     margin-top: 5px;
 }
 
+/* Comment form */
+.comment-form {
+    margin-bottom: 20px;
+}
+
+/* Form label style */
+.form-label {
+    color: #333; /* Change the color to your desired font color */
+}
+
+/* Form control style */
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+/* Primary button style */
+.btn-primary {
+    background-color: #007bff; /* Change the background color to your desired color */
+    color: #fff; /* Change the font color to white or any other suitable color */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Comments section */
+.comments-section {
+    margin-top: 20px;
+}
+
+/* Comments heading style */
+.comments-heading {
+    color: #333; /* Change the color to your desired font color */
+}
+
+/* No comments heading style */
+.no-comments-heading {
+    color: #888; /* Change the color to a lighter shade to indicate no comments */
+}
+
+/* Comment list style */
+.comment-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* Individual comment item style */
+.comment-item {
+    margin-bottom: 10px;
+}
+
+/* Comment content style */
+.comment-content {
+    font-weight: bold;
+}
+
+/* Comment info style */
+.comment-info {
+    color: #888; /* Change the color to a lighter shade for the comment info */
+}
